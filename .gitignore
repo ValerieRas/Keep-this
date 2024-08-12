@@ -1,0 +1,63 @@
+# Build Folders
+bin/
+obj/
+
+# User-Specific Files
+.vscode/
+.vs/
+*.user
+*.suo
+
+# Logs
+*.log
+*.tlog
+*.log2
+
+# NuGet Packages
+packages/
+*.nupkg
+# Uncomment if you have any NuGet cache files to ignore
+# nuget.exe
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Entity Framework Migrations
+Migrations/
+
+# Database Files
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+
+# IDE Specific
+*.swp
+*.swo
+.idea/
+*.code-workspace
+.project
+.settings/
+.classpath
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# Visual Studio Code settings
+.vscode/
+
+# macOS files
+.DS_Store
+
+# Linux files
+.Trash-*
+
+# Windows files
+Thumbs.db
+ehthumbs.db
