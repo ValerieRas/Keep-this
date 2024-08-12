@@ -1,4 +1,6 @@
 ﻿using API.KeepThis.Data;
+using API.KeepThis.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.KeepThis.Repositories
 {
@@ -9,6 +11,23 @@ namespace API.KeepThis.Repositories
         public UsersRepository(KeepThisDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
+            }
+
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.CertifiedEmailUser == email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
         }
     }
 }

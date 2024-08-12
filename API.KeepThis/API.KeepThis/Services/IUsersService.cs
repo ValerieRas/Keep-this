@@ -1,7 +1,10 @@
-﻿namespace API.KeepThis.Services
+﻿using API.KeepThis.Model;
+using Microsoft.AspNetCore.Identity.Data;
+
+namespace API.KeepThis.Services
 {
     public interface IUsersService
     {
-
+        Task<User> AuthenticateUserAsync(LoginRequest request);
     }
 }
