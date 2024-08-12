@@ -20,7 +20,9 @@ namespace API.KeepThis.Repositories
                 throw new ArgumentException("Email cannot be null or empty.", nameof(email));
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.CertifiedEmailUser == email);
+            // Search for the user by either CertifiedEmailUser or TemporaryEmail
+            var user = await _context.Users
+                .SingleOrDefaultAsync(u => u.CertifiedEmailUser == email || u.TempEmailUser == email);
 
             if (user == null)
             {

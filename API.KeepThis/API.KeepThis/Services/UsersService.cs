@@ -22,8 +22,16 @@ namespace API.KeepThis.Services
 
             if (user == null || !_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
             {
-                return null;
+                throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
+
+            if (string.IsNullOrEmpty(user.CertifiedEmailUser))
+            {
+                // Email is not certified
+                throw new UnauthorizedAccessException("email non certifié. Echec de connexion.");
+
+            }
+
 
             return new User { CertifiedEmailUser = user.CertifiedEmailUser };
         }
