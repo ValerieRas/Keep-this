@@ -5,6 +5,6 @@ namespace API.KeepThis.Services
 {
     public interface IUsersService
     {
-        Task<User> AuthenticateUserAsync(LoginRequest request);
+       
     }
 }

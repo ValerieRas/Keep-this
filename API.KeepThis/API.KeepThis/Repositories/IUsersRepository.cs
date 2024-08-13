@@ -4,6 +4,6 @@ namespace API.KeepThis.Repositories
 {
     public interface IUsersRepository
     {
-        Task<User> GetByEmailAsync(string email);
+        Task<User>? GetByEmailAsync(string email);
     }
 }

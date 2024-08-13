@@ -15,17 +15,5 @@ namespace API.KeepThis.Controllers
             _UsersService = UsersService;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var result = await _UsersService.AuthenticateUserAsync(request);
-
-            if (result == null)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(result);
-        }
     }
 }

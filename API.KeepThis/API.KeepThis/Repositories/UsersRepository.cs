@@ -13,13 +13,8 @@ namespace API.KeepThis.Repositories
             _context = context;
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<User>? GetByEmailAsync(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
-            }
-
             // Search for the user by either CertifiedEmailUser or TemporaryEmail
             var user = await _context.Users
                 .SingleOrDefaultAsync(u => u.CertifiedEmailUser == email || u.TempEmailUser == email);
