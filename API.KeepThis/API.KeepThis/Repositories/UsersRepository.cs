@@ -23,12 +23,6 @@ namespace API.KeepThis.Repositories
         /// <exception cref="ArgumentException">Thrown when the email is null, empty, or consists only of white-space characters.</exception>
         public async Task<User?> GetByEmailAsync(string email)
         {
-            // Validate the email input
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException("Email cannot be null, empty, or whitespace.", nameof(email));
-            }
-
             // Search for the user by either CertifiedEmailUser or TemporaryEmail
             // Return null if nothing is found, throw exception if more than one
             return await _context.Users
