@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
-//Connection striong to dataBase
+//Connection string to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
 builder.Services.AddDbContext<IKeepThisDbContext, KeepThisDbContext>(
