@@ -9,5 +9,7 @@ namespace API.KeepThis.Services
     {
         string GenerateJwtToken(User user);
         Task<LoginUserDto> AuthenticateUserAsync(LoginDto request);
+        Task<bool> VerifyEmailAsync(string token);
+        string GenerateEmailVerificationToken(string email);
     }
 }

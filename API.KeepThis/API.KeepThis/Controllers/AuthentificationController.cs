@@ -3,6 +3,10 @@ using API.KeepThis.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace API.KeepThis.Controllers
 {
@@ -41,5 +45,35 @@ namespace API.KeepThis.Controllers
                 return StatusCode(500, new { Message = "An unexpected error occurred.", Details = ex.Message });
             }
         }
+
+        // GET endpoint to generate and send the email verification token
+        [HttpGet("token-verification-email")]
+        public async Task<IActionResult> GetTokenVerificationEmail([FromQuery] string email)
+        {
+
+            // Generate the verification token
+            var token = _AuthentificationService.GenerateEmailVerificationToken(email);
+
+            // Return the token
+            return Ok(new { Token = token });
+        }
+
+
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromBody]string token)
+        {
+            var result = await _AuthentificationService.VerifyEmailAsync(token);
+
+            if (result)
+            {
+                return Ok("Email verified successfully!");
+            }
+            else
+            {
+                return BadRequest("Invalid or expired token.");
+            }
+        }
+
+
     }
 }

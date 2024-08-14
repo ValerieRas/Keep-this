@@ -110,5 +110,67 @@ namespace API.KeepThis.Services
 
             return new LoginUserDto { User = user, Token=token };
         }
+
+        public string GenerateEmailVerificationToken(string email)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, email) }),
+                Expires = DateTime.UtcNow.AddHours(1), // Token expiration
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                // Set a specific audience and issuer for verification tokens if needed
+                Audience = "EmailVerification",
+                Issuer = "KeepThisAPI"
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<bool> VerifyEmailAsync(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secretKey);
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = "KeepThisAPI",
+                    ValidAudience = "EmailVerification",
+                    ValidateLifetime = true
+                }, out SecurityToken validatedToken);
+
+                var email = principal.FindFirst(ClaimTypes.Email)?.Value;
+
+                if (email == null)
+                {
+                    return false; // Invalid token
+                }
+
+                var user = await _UsersRepository.GetByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return false; // User not found or already verified
+                }
+
+                user.CertifiedEmailUser = email;
+ 
+
+                await _UsersRepository.UpdateAsync(user);
+
+                return true; // Email verified successfully
+            }
+            catch
+            {
+                return false; // Token validation failed
+            }
+        }
     }
 }
