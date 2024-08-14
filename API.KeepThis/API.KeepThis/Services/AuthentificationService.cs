@@ -57,7 +57,7 @@ namespace API.KeepThis.Services
                 throw new UnauthorizedAccessException("Le compte a été désactivé");
             }
 
-            if (user == null || !_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
+            if (user == null)
             {
                 throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
@@ -65,7 +65,7 @@ namespace API.KeepThis.Services
             if (string.IsNullOrEmpty(user.CertifiedEmailUser))
             {
                 // Email is not certified
-                throw new UnauthorizedAccessException("email non certifié. Echec de connexion.");
+                throw new UnauthorizedAccessException("Echec de connexion.Veuillez certifier votre email");
 
             }
 
