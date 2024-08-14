@@ -9,12 +9,12 @@ namespace API.KeepThis.Services
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordSecurity _passwordSecurity;
 
-        public UsersService(IUsersRepository usersRepository, IPasswordHasher passwordHasher)
+        public UsersService(IUsersRepository usersRepository, IPasswordSecurity passwordSecurity)
         {
             _usersRepository = usersRepository;
-            _passwordHasher = passwordHasher;
+            _passwordSecurity = passwordSecurity;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace API.KeepThis.Services
         /// <exception cref="ArgumentException">Thrown when the email or password is invalid</exception>
         public async Task<User> CreateUserAsync(string tempEmailUser, string passwordUser, string nomUser)
         {
-            // Validate the email and password
+            // Validate input
             if (string.IsNullOrWhiteSpace(tempEmailUser))
             {
                 throw new ArgumentException("Email cannot be null or empty.", nameof(tempEmailUser));
@@ -38,31 +38,35 @@ namespace API.KeepThis.Services
                 throw new ArgumentException("Password cannot be null or empty.", nameof(passwordUser));
             }
 
-            // Check if the email is already in use
-            var existingUser = await _usersRepository.GetByEmailAsync(tempEmailUser);
-            if (existingUser != null)
+            if (string.IsNullOrWhiteSpace(nomUser))
             {
-                throw new ArgumentException("A user with this email already exists.");
+                throw new ArgumentException("Name cannot be null or empty.", nameof(nomUser));
             }
 
-            // Hash the password
-            string hashedPassword = _passwordHasher.HashPassword(passwordUser);
-
-            // Create the new user
+            // Create a new user object
             var newUser = new User
             {
-                IdUser = Guid.NewGuid().ToString(), // Generate a new unique ID
                 TempEmailUser = tempEmailUser,
-                PasswordUser = hashedPassword,
                 NomUser = nomUser,
                 CreatedAt = DateTime.UtcNow,
-                IsActive = true // Set user as active by default
+                IsActive = true
             };
 
-            // Add the user to the database
-            await _usersRepository.AddUserAsync(newUser);
+            // Hash the password using the generated salt
+            newUser.PasswordUser = _passwordSecurity.HashPassword(passwordUser, newUser.SaltUser);
 
-            // Return the created user
+            try
+            {
+                await _usersRepository.AddUserAsync(newUser);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception message or stack trace
+                Console.WriteLine($"Error saving user: {ex.Message}");
+                throw;
+            }
+
+
             return newUser;
         }
     }

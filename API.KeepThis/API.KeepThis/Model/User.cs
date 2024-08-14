@@ -8,8 +8,7 @@ public partial class User
 {
     [Key]
     [Column("id_user")]
-    [StringLength(36)]
-    public string IdUser { get; set; } = null!;
+    public Guid IdUser { get; set; } = Guid.NewGuid(); // Automatically generates UUID
 
     [Column("nom_user")]
     [StringLength(50)]
@@ -29,7 +28,7 @@ public partial class User
 
     [Column("salt_user")]
     [StringLength(100)]
-    public string SaltUser { get; set; } = null!;
+    public string SaltUser { get; set; } = BCrypt.Net.BCrypt.GenerateSalt(); // Automatically generates a salt
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
