@@ -1,5 +1,6 @@
 ﻿using API.KeepThis.Helpers;
 using API.KeepThis.Model;
+using API.KeepThis.Model.DTO;
 using API.KeepThis.Repositories;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.IdentityModel.Tokens;
@@ -47,9 +48,14 @@ namespace API.KeepThis.Services
         }
 
 
-        public async Task<User> AuthenticateUserAsync(LoginRequest request)
+        public async Task<LoginUserDto> AuthenticateUserAsync(LoginDto request)
         {
             var user = await _UsersRepository.GetByEmailAsync(request.Email);
+
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Le compte a été désactivé");
+            }
 
             if (user == null || !_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
             {
@@ -63,19 +69,46 @@ namespace API.KeepThis.Services
 
             }
 
+            if (user.LockedOutEnd.HasValue && user.LockedOutEnd.Value > DateTime.UtcNow)
+            {
+                // User is currently locked out
+                throw new UnauthorizedAccessException("Nombre d'erreur de connexion dépassé. Veuillez réessayer plus tard.");
+            }
+
+            if (!_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
+            {
+                // Increment failed login attempts
+                user.FailedLoginAttemps++;
+
+                if (user.FailedLoginAttemps >= 3)
+                {
+                    // Set lockout end time
+                    user.LockedOutEnd = DateTime.UtcNow.AddMinutes(5);
+                }
+
+                await _UsersRepository.UpdateAsync(user);
+
+                throw new UnauthorizedAccessException("email ou mot de passe incorrect");
+            }
+
+            // Reset failed login attempts on successful login
+            user.FailedLoginAttemps = 0;
+            user.LockedOutEnd = null;
+            await _UsersRepository.UpdateAsync(user);
+
             var token = GenerateJwtToken(user);
 
             // Store the token in the database
             var userToken = new AuthentificationToken
             {
-                IdUser = user.CertifiedEmailUser, // or user.Id if you have a unique user identifier
+                IdUser = user.IdUser,
                 Token = token,
                 TimestampToken = DateTime.UtcNow
             };
 
-            await _tokenRepository.AddTokenAsync(userToken);
+            await _tokenRepository.AddTokenAsync(userToken);         
 
-            return new User { CertifiedEmailUser = user.CertifiedEmailUser };
+            return new LoginUserDto { User = user, Token=token };
         }
     }
 }

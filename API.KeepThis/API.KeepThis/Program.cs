@@ -15,7 +15,7 @@ IConfiguration configuration = builder.Configuration;
 //Connection striong to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
-builder.Services.AddDbContext<IKeepThisDbContext, KeepThisDbContext>(
+builder.Services.AddDbContext<KeepThisDbContext>(
     options => options.UseNpgsql(connectionString)
     );
 

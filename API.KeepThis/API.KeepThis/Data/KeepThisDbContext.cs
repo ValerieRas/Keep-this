@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.KeepThis.Data;
 
-public partial class KeepThisDbContext : DbContext, IKeepThisDbContext
+public partial class KeepThisDbContext : DbContext
 {
     public KeepThisDbContext()
     {
     }
 
-    public KeepThisDbContext(DbContextOptions<DbContext> options)
+    public KeepThisDbContext(DbContextOptions<KeepThisDbContext> options)
         : base(options)
     {
     }

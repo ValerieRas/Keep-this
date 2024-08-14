@@ -1,4 +1,5 @@
-﻿using API.KeepThis.Services;
+﻿using API.KeepThis.Model.DTO;
+using API.KeepThis.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace API.KeepThis.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
             try
             {

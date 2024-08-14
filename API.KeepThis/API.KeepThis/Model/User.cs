@@ -40,6 +40,12 @@ public partial class User
     [Column("is_active")]
     public bool IsActive { get; set; }
 
+    [Column("failed_login_attemps")]
+    public int? FailedLoginAttemps { get; set; }
+
+    [Column("locked_out_end", TypeName = "timestamp without time zone")]
+    public DateTime? LockedOutEnd { get; set; }
+
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<AuthentificationToken> AuthentificationTokens { get; set; } = new List<AuthentificationToken>();
 
