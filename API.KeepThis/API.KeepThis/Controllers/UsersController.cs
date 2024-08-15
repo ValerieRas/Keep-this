@@ -1,6 +1,7 @@
-﻿using API.KeepThis.Model;
+﻿using API.KeepThis.Model.DTO;
 using API.KeepThis.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace API.KeepThis.Controllers
 {
@@ -9,43 +10,23 @@ namespace API.KeepThis.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
-        public UsersController(IUsersService UsersService)
+
+        public UsersController(IUsersService usersService)
         {
-            _usersService = UsersService;
+            _usersService = usersService;
         }
 
-        /// <summary>
-        /// Creates a new user account
-        /// </summary>
-        /// <param name="user">The user's details for account creation</param>
-        /// <returns>The created user or an error response</returns>
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateUser([Bind("TempEmailUser, PasswordUser, NomUser")] User user)
+        [HttpPost("register-account")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreationDTO userCreationDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                // The service handles the creation of the ID and Salt
-                var newUser = await _usersService.CreateUserAsync(
-                    user.TempEmailUser,
-                    user.PasswordUser,
-                    user.NomUser
-                );
+            var createdUser = await _usersService.CreateUserAsync(userCreationDTO);
 
-                return Ok(newUser);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal server error. Please try again later.");
-            }
+            return Ok(createdUser);
         }
     }
 }

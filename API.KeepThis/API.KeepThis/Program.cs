@@ -7,13 +7,10 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-
 //Connection string to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
-builder.Services.AddDbContext<IKeepThisDbContext, KeepThisDbContext>(
+builder.Services.AddDbContext<KeepThisDbContext>(
     options => options.UseNpgsql(connectionString)
     );
 
@@ -31,8 +28,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.KeepThis.Model;
 
@@ -8,7 +11,8 @@ public partial class User
 {
     [Key]
     [Column("id_user")]
-    public Guid IdUser { get; set; } = Guid.NewGuid(); // Automatically generates UUID
+    [StringLength(36)]
+    public string IdUser { get; set; } = null!;
 
     [Column("nom_user")]
     [StringLength(50)]
@@ -28,7 +32,7 @@ public partial class User
 
     [Column("salt_user")]
     [StringLength(100)]
-    public string SaltUser { get; set; } = BCrypt.Net.BCrypt.GenerateSalt(); // Automatically generates a salt
+    public string SaltUser { get; set; } = null!;
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
