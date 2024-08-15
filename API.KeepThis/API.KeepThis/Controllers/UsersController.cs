@@ -1,18 +1,32 @@
-﻿using API.KeepThis.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using API.KeepThis.Model.DTO;
+using API.KeepThis.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace API.KeepThis.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUsersService _UsersService;
-        public UsersController(IUsersService UsersService)
+        private readonly IUsersService _usersService;
+
+        public UsersController(IUsersService usersService)
         {
-            _UsersService = UsersService;
+            _usersService = usersService;
+        }
+
+        [HttpPost("register-account")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreationDTO userCreationDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var createdUser = await _usersService.CreateUserAsync(userCreationDTO);
+
+            return Ok(createdUser);
         }
 
     }
