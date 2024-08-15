@@ -12,11 +12,16 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("appsettings.docker.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 //Connection string to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
 builder.Services.AddDbContext<KeepThisDbContext>(
-    options => options.UseNpgsql(connectionString)
+    options => options.UseNpgsql(connectionString).EnableDetailedErrors()
     );
 
 

@@ -4,12 +4,17 @@ services:
   postgres:
     image: postgres:latest
     container_name: postgres-db
+    hostname: postgres-db
     environment:
       POSTGRES_DB: keep-this
       POSTGRES_USER: keep-this-user
       POSTGRES_PASSWORD: keepthis24
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL",  "pg_isready -d keep-this -U keep-this-user"]
+      timeout: 10s
+      retries: 20
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -20,10 +25,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres-db;Port=5432;Database=keep-this;Username=keep-this-user;Password=keepthis24;"
     ports:
-      - "5000:80"
+      - "9039:80"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - dev-network
 

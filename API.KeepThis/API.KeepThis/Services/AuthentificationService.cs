@@ -52,18 +52,18 @@ namespace API.KeepThis.Services
         {
             var user = await _UsersRepository.GetByEmailAsync(request.Email);
 
-            if (!user.IsActive)
-            {
-                throw new UnauthorizedAccessException("Le compte a été désactivé");
-            }
-
             if (user == null || !_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
             {
                 throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
 
-            if (string.IsNullOrEmpty(user.CertifiedEmailUser))
+            if (!user.IsActive)
             {
+                throw new UnauthorizedAccessException("Le compte a été désactivé");
+            }
+
+            if (string.IsNullOrEmpty(user.CertifiedEmailUser))
+            { 
                 // Email is not certified
                 throw new UnauthorizedAccessException("email non certifié. Echec de connexion.");
 
