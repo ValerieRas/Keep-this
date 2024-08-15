@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
-//Connection striong to dataBase
+//Connection string to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
-builder.Services.AddDbContext<IKeepThisDbContext, KeepThisDbContext>(
+builder.Services.AddDbContext<KeepThisDbContext>(
     options => options.UseNpgsql(connectionString)
     );
 
@@ -20,7 +20,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IPasswordSecurity, PasswordSecurity>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
