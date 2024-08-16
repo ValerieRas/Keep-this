@@ -13,7 +13,7 @@ namespace API.KeepThis.Repositories
             _context = context;
         }
 
-        public async Task<User>? GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
             // Search for the user by either CertifiedEmailUser or TemporaryEmail
             var user = await _context.Users

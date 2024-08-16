@@ -18,6 +18,29 @@ namespace API.KeepThis.Services
 
         public async Task<User> CreateUserAsync(UserCreationDTO userCreationDTO)
         {
+            // Validate input
+            if (string.IsNullOrWhiteSpace(userCreationDTO.TempEmailUser))
+            {
+                throw new ArgumentException("Le champ 'e-mail' ne peut pas être vide.", nameof(userCreationDTO.TempEmailUser));
+            }
+
+            if (string.IsNullOrWhiteSpace(userCreationDTO.PasswordUser))
+            {
+                throw new ArgumentException("Le champ 'mot de passe' ne peut pas être vide.", nameof(userCreationDTO.PasswordUser));
+            }
+
+            if (string.IsNullOrWhiteSpace(userCreationDTO.NomUser))
+            {
+                throw new ArgumentException("Le nom d'utilisateur ne peut pas être vide.", nameof(userCreationDTO.NomUser));
+            }
+
+            // Check if the email is already used
+            var existingUser = await _usersRepository.GetByEmailAsync(userCreationDTO.TempEmailUser);
+            if (existingUser != null)
+            {
+                throw new InvalidOperationException("Cette adresse e-mail est déjà utilisée.");
+            }
+
             // Map the DTO to the User entity
             var newUser = MapToUser(userCreationDTO);
 
@@ -27,15 +50,23 @@ namespace API.KeepThis.Services
             return newUser;
         }
 
+
         public async Task UpdateUsernameAsync(string userId, string newUsername)
         {
             if (string.IsNullOrWhiteSpace(newUsername))
             {
-                throw new ArgumentException("Username cannot be null or empty.", nameof(newUsername));
+                throw new ArgumentException("Le nom d'utilisateur ne peut pas être vide.", nameof(newUsername));
+            }
+
+            var user = await _usersRepository.GetByEmailAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("Utilisateur non trouvé.");
             }
 
             await _usersRepository.UpdateUsernameAsync(userId, newUsername);
         }
+
 
 
 
