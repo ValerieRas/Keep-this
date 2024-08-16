@@ -28,7 +28,7 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres-db;Port=5432;Database=keep-this;Username=keep-this-user;Password=keepthis24;"
     ports:
-      - "9039:80"
+      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy

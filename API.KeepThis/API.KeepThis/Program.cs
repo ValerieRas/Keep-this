@@ -17,6 +17,7 @@ builder.Configuration
     .AddJsonFile("appsettings.docker.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+
 //Connection string to dataBase
 
 string? connectionString = configuration.GetConnectionString("ConnectDB");
@@ -97,11 +98,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(options => options
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
- );
 
 app.UseHttpsRedirection();
 
