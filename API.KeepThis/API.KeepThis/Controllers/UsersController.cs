@@ -1,7 +1,6 @@
 ﻿using API.KeepThis.Model.DTO;
 using API.KeepThis.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace API.KeepThis.Controllers
 {
