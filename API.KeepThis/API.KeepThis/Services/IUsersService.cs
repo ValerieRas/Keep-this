@@ -6,6 +6,6 @@ namespace API.KeepThis.Services
     public interface IUsersService
     {
         Task<User> CreateUserAsync(UserCreationDTO userCreationDTO);
-        Task UpdateUsernameAsync(string userId, string newUsername);
+        Task UpdateUsernameAsync(UpdateUsernameDTO updateUsernameDTO);
     }
 }

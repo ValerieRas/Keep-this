@@ -18,27 +18,11 @@ namespace API.KeepThis.Services
 
         public async Task<User> CreateUserAsync(UserCreationDTO userCreationDTO)
         {
-            // Validate input
-            if (string.IsNullOrWhiteSpace(userCreationDTO.TempEmailUser))
-            {
-                throw new ArgumentException("Le champ 'e-mail' ne peut pas être vide.", nameof(userCreationDTO.TempEmailUser));
-            }
-
-            if (string.IsNullOrWhiteSpace(userCreationDTO.PasswordUser))
-            {
-                throw new ArgumentException("Le champ 'mot de passe' ne peut pas être vide.", nameof(userCreationDTO.PasswordUser));
-            }
-
-            if (string.IsNullOrWhiteSpace(userCreationDTO.NomUser))
-            {
-                throw new ArgumentException("Le nom d'utilisateur ne peut pas être vide.", nameof(userCreationDTO.NomUser));
-            }
-
             // Check if the email is already used
             var existingUser = await _usersRepository.GetByEmailAsync(userCreationDTO.TempEmailUser);
             if (existingUser != null)
             {
-                throw new InvalidOperationException("Cette adresse e-mail est déjà utilisée.");
+                throw new InvalidOperationException("L'adresse e-mail est déjà utilisée.");
             }
 
             // Map the DTO to the User entity
@@ -50,22 +34,24 @@ namespace API.KeepThis.Services
             return newUser;
         }
 
-
-        public async Task UpdateUsernameAsync(string userId, string newUsername)
+        public async Task UpdateUsernameAsync(UpdateUsernameDTO updateUsernameDTO)
         {
-            if (string.IsNullOrWhiteSpace(newUsername))
-            {
-                throw new ArgumentException("Le nom d'utilisateur ne peut pas être vide.", nameof(newUsername));
-            }
+            // Find the user by their ID
+            var existingUser = await _usersRepository.GetByIdAsync(updateUsernameDTO.UserId);
 
-            var user = await _usersRepository.GetByEmailAsync(userId);
-            if (user == null)
+            // If the user is not found, throw an exception
+            if (existingUser == null)
             {
                 throw new KeyNotFoundException("Utilisateur non trouvé.");
             }
 
-            await _usersRepository.UpdateUsernameAsync(userId, newUsername);
+            // Update the user's username
+            existingUser.NomUser = updateUsernameDTO.NewUsername;
+
+            // Send the updated user to the repository to save changes
+            await _usersRepository.UpdateUsernameAsync(existingUser);
         }
+
 
 
 

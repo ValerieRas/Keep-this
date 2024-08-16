@@ -20,34 +20,54 @@ namespace API.KeepThis.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                                              .ToList();
+                return BadRequest(new { Message = "Données invalides fournies.", Errors = errors });
             }
 
-            var createdUser = await _usersService.CreateUserAsync(userCreationDTO);
-
-            return Ok(createdUser);
-        }
-
-        [HttpPut("update-username")]
-        public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameDTO updateUsernameDTO)
-        {
             try
             {
-                await _usersService.UpdateUsernameAsync(updateUsernameDTO.UserId, updateUsernameDTO.NewUsername);
-                return Ok(new { Message = "Nom d'utilisateur mis à jour avec succès." });
+                var newUser = await _usersService.CreateUserAsync(userCreationDTO);
+                return Ok(new { Message = "Compte créé avec succès.", UserId = newUser.IdUser });
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException ex)
             {
-                return NotFound(new { Message = "Utilisateur non trouvé." });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { ex.Message });
             }
             catch (Exception)
             {
                 return StatusCode(500, new { Message = "Erreur interne du serveur." });
             }
         }
+
+
+
+        [HttpPut("update-username")]
+        public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameDTO updateUsernameDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                                              .ToList();
+                return BadRequest(new { Message = "Données invalides fournies.", Errors = errors });
+            }
+
+            try
+            {
+                await _usersService.UpdateUsernameAsync(updateUsernameDTO);
+                return Ok(new { Message = "Nom d'utilisateur mis à jour avec succès." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "Erreur interne du serveur." });
+            }
+        }
+
     }
 }
