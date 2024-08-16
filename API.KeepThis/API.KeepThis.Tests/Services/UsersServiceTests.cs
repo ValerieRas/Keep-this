@@ -23,6 +23,55 @@ namespace API.KeepThis.Tests.Services
         }
 
         [Fact]
+        public async Task CreateUserAsync_ExistingEmail_ThrowsException()
+        {
+            // Arrange
+            var userCreationDTO = new UserCreationDTO
+            {
+                TempEmailUser = "existing@example.com",
+                PasswordUser = "ValidPassword123!",
+                NomUser = "Existing User"
+            };
+
+            // Mock the GetByEmailAsync method to return an existing user
+            _mockUsersRepository.Setup(repo => repo.GetByEmailAsync(userCreationDTO.TempEmailUser))
+                .ReturnsAsync(new User { TempEmailUser = userCreationDTO.TempEmailUser });
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => _usersService.CreateUserAsync(userCreationDTO));
+
+            Assert.Equal("L'adresse e-mail est déjà utilisée.", exception.Message);
+        }
+
+        [Fact]
+        public async Task CreateUserAsync_SaveToDatabaseFails_ThrowsException()
+        {
+            // Arrange
+            var userCreationDTO = new UserCreationDTO
+            {
+                TempEmailUser = "newuser@example.com",
+                PasswordUser = "ValidPassword123!",
+                NomUser = "New User"
+            };
+
+            // Mock the GetByEmailAsync method to return null (email not in use)
+            _mockUsersRepository.Setup(repo => repo.GetByEmailAsync(userCreationDTO.TempEmailUser))
+                .ReturnsAsync((User)null);
+
+            // Mock the CreateUserAsync method to throw an exception
+            _mockUsersRepository.Setup(repo => repo.CreateUserAsync(It.IsAny<User>()))
+                .ThrowsAsync(new Exception("Database save failed"));
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(
+                () => _usersService.CreateUserAsync(userCreationDTO));
+
+            Assert.Equal("Database save failed", exception.Message);
+        }
+
+
+        [Fact]
         public async Task UpdateUsernameAsync_ValidUserId_UpdatesUsernameSuccessfully()
         {
             // Arrange
