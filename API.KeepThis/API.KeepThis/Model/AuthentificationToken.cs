@@ -11,7 +11,6 @@ public partial class AuthentificationToken
 {
     [Key]
     [Column("token")]
-    [StringLength(100)]
     public string Token { get; set; } = null!;
 
     [Column("timestamp_token", TypeName = "timestamp without time zone")]

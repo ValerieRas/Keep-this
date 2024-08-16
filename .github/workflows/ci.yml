@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - develop
+      - main
 
 jobs:
   build:
@@ -22,14 +23,14 @@ jobs:
         dotnet-version: '8.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore "./API.KeepThis/API.KeepThis/API.KeepThis.csproj"
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build "./API.KeepThis/API.KeepThis.csproj" --no-restore
 
     # Removed the test step since there are no tests yet
     # - name: Run tests
-    #   run: dotnet test --no-restore --verbosity normal
+    #   run: dotnet test ./path/to/your/Test.csproj --no-restore --verbosity normal
 
     - name: Publish
-      run: dotnet publish -c Release -o out
+      run: dotnet publish "./API.KeepThis/API.KeepThis.csproj" -c Release -o out

@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -19,15 +16,16 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-
+          
       - name: Restore dependencies
-        run: dotnet restore
-
+        run: dotnet restore "./API.KeepThis/API.KeepThis/API.KeepThis.csproj"
+        
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build "./API.KeepThis/API.KeepThis/API.KeepThis.csproj" --no-restore
 
-      - name: Run tests
-        run: dotnet test --no-restore --verbosity normal
+      # Removed the test step since there are no tests yet
+    # - name: Run tests
+    #   run: dotnet test --no-restore --verbosity normal
 
   deploy:
     runs-on: ubuntu-latest

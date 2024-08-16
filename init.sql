@@ -7,6 +7,8 @@ CREATE TABLE Users(
     salt_user VARCHAR(100)  NOT NULL,
     created_at TIMESTAMP NOT NULL,
     is_active BOOLEAN NOT NULL,
+	failed_login_attemps INT,
+	locked_out_end TIMESTAMP,
     PRIMARY KEY(id_user)
 );
 
@@ -41,7 +43,7 @@ CREATE TABLE administrators(
 );
 
 CREATE TABLE authentification_tokens(
-    token VARCHAR(100) ,
+    token TEXT ,
     timestamp_token TIMESTAMP NOT NULL,
     id_user VARCHAR(36) ,
     PRIMARY KEY(token),
