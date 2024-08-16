@@ -1,9 +1,6 @@
 ﻿using API.KeepThis.Data;
 using API.KeepThis.Model;
 using Microsoft.EntityFrameworkCore;
-using API.KeepThis.Model;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace API.KeepThis.Repositories
 {
@@ -30,7 +27,7 @@ namespace API.KeepThis.Repositories
             return user;
         }
 
-        public async Task UpdateAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
             _context.Users.Update(user);
 
@@ -42,5 +39,18 @@ namespace API.KeepThis.Repositories
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateUsernameAsync(string userId, string newUsername)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            user.NomUser = newUsername;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

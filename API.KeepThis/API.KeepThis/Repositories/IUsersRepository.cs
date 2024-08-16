@@ -6,6 +6,8 @@ namespace API.KeepThis.Repositories
     {
         Task AddUserAsync(User user);
         Task<User>? GetByEmailAsync(string email);
-        Task UpdateAsync(User user);
+        Task UpdateUserAsync(User user);
+        Task UpdateUsernameAsync(string userId, string newUsername);
+
     }
 }

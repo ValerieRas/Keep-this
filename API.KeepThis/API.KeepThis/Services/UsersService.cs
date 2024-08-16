@@ -2,8 +2,6 @@
 using API.KeepThis.Model;
 using API.KeepThis.Model.DTO;
 using API.KeepThis.Repositories;
-using System;
-using System.Threading.Tasks;
 
 namespace API.KeepThis.Services
 {
@@ -28,6 +26,18 @@ namespace API.KeepThis.Services
 
             return newUser;
         }
+
+        public async Task UpdateUsernameAsync(string userId, string newUsername)
+        {
+            if (string.IsNullOrWhiteSpace(newUsername))
+            {
+                throw new ArgumentException("Username cannot be null or empty.", nameof(newUsername));
+            }
+
+            await _usersRepository.UpdateUsernameAsync(userId, newUsername);
+        }
+
+
 
         private User MapToUser(UserCreationDTO dto)
         {
