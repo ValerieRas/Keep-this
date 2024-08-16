@@ -28,5 +28,26 @@ namespace API.KeepThis.Controllers
             return Ok(createdUser);
         }
 
+        [HttpPut("update-username")]
+        public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameDTO updateUsernameDTO)
+        {
+            try
+            {
+                await _usersService.UpdateUsernameAsync(updateUsernameDTO.UserId, updateUsernameDTO.NewUsername);
+                return Ok(new { Message = "Nom d'utilisateur mis à jour avec succès." });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { Message = "Utilisateur non trouvé." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "Erreur interne du serveur." });
+            }
+        }
     }
 }
