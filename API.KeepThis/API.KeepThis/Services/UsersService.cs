@@ -29,7 +29,7 @@ namespace API.KeepThis.Services
             var newUser = MapToUser(userCreationDTO);
 
             // Save the user to the database
-            await _usersRepository.AddUserAsync(newUser);
+            await _usersRepository.CreateUserAsync(newUser);
 
             return newUser;
         }
