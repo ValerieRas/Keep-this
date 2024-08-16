@@ -27,6 +27,11 @@ namespace API.KeepThis.Repositories
             return user;
         }
 
+        public async Task<User?> GetByIdAsync(string userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
+
         public async Task UpdateUserAsync(User user)
         {
             _context.Users.Update(user);
@@ -40,15 +45,9 @@ namespace API.KeepThis.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUsernameAsync(string userId, string newUsername)
+        public async Task UpdateUsernameAsync(User user)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-            {
-                throw new KeyNotFoundException("User not found.");
-            }
-
-            user.NomUser = newUsername;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
