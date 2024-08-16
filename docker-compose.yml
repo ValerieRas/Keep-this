@@ -3,12 +3,12 @@ version: '3.4'
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres-db
-    hostname: postgres-db
+    container_name: ${CONTAINER_NAME}
+    hostname: ${DB_HOSTNAME}
     environment:
-      POSTGRES_DB: keep-this
-      POSTGRES_USER: keep-this-user
-      POSTGRES_PASSWORD: keepthis24
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
     ports:
       - "5432:5432"
     healthcheck:
@@ -22,11 +22,7 @@ services:
       - dev-network
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=postgres-db;Port=5432;Database=keep-this;Username=keep-this-user;Password=keepthis24;"
+    image: ${IMAGE_NAME}   
     ports:
       - "8080:8080"
     depends_on:

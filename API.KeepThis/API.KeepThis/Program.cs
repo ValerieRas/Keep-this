@@ -12,6 +12,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
+
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddJsonFile("appsettings.docker.json", optional: true, reloadOnChange: true)
@@ -41,7 +42,7 @@ builder.Services.AddScoped<IAuthentificationService>(serviceProvider =>
 {
 
     var jwtSettings = serviceProvider.GetRequiredService<IJwtSettings>();
-    var passwordHasher = serviceProvider.GetRequiredService<IPasswordHasher>();
+    var passwordHasher = serviceProvider.GetRequiredService<IPasswordSecurity>();
     var usersRepository = serviceProvider.GetRequiredService<IUsersRepository>();
     var authTokenRepository = serviceProvider.GetRequiredService<IAuthTokenRepository>();
 
@@ -78,7 +79,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IPasswordSecurity, PasswordSecurity>();
 builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
 builder.Services.AddScoped<IAuthTokenRepository, AuthTokenRepository>();
 

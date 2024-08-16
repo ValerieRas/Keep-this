@@ -15,8 +15,9 @@ namespace API.KeepThis.Repositories
 
         public async Task AddTokenAsync(AuthentificationToken token)
         {
-            _context.AuthentificationTokens.Add(token);
-            await _context.SaveChangesAsync();
+                _context.AuthentificationTokens.Add(token);
+                await _context.SaveChangesAsync();
+            
         }
 
         public async Task<AuthentificationToken> GetTokenByUserIdAsync(string userId)

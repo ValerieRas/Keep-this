@@ -12,15 +12,15 @@ namespace API.KeepThis.Services
 {
     public class AuthentificationService : IAuthentificationService
     {
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordSecurity _passwordSecurity;
         private readonly IUsersRepository _UsersRepository;
         private readonly IAuthTokenRepository _tokenRepository;
         private readonly string _secretKey;
 
-        public AuthentificationService(IJwtSettings jwtSettings, IPasswordHasher passwordHasher, IUsersRepository UsersRepository, IAuthTokenRepository authTokenRepository)
+        public AuthentificationService(IJwtSettings jwtSettings, IPasswordSecurity passwordSecurity, IUsersRepository UsersRepository, IAuthTokenRepository authTokenRepository)
         {
             _secretKey = jwtSettings.SecretKey;
-            _passwordHasher = passwordHasher;
+            _passwordSecurity = passwordSecurity;
             _UsersRepository = UsersRepository;
             _tokenRepository = authTokenRepository;
         }
@@ -52,7 +52,7 @@ namespace API.KeepThis.Services
         {
             var user = await _UsersRepository.GetByEmailAsync(request.Email);
 
-            if (user == null || !_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
+            if (user == null || !_passwordSecurity.VerifyPassword(user.PasswordUser, request.Password, user.SaltUser))
             {
                 throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
@@ -65,7 +65,7 @@ namespace API.KeepThis.Services
             if (string.IsNullOrEmpty(user.CertifiedEmailUser))
             { 
                 // Email is not certified
-                throw new UnauthorizedAccessException("email non certifié. Echec de connexion.");
+                throw new UnauthorizedAccessException("Echec de connexion.Veuillez certifier votre email");
 
             }
 
@@ -75,7 +75,7 @@ namespace API.KeepThis.Services
                 throw new UnauthorizedAccessException("Nombre d'erreur de connexion dépassé. Veuillez réessayer plus tard.");
             }
 
-            if (!_passwordHasher.VerifyPassword(user.PasswordUser, request.Password))
+            if (!_passwordSecurity.VerifyPassword(user.PasswordUser, request.Password,user.SaltUser))
             {
                 // Increment failed login attempts
                 user.FailedLoginAttemps++;
@@ -83,7 +83,7 @@ namespace API.KeepThis.Services
                 if (user.FailedLoginAttemps >= 3)
                 {
                     // Set lockout end time
-                    user.LockedOutEnd = DateTime.UtcNow.AddMinutes(5);
+                    user.LockedOutEnd = DateTime.Now.AddMinutes(5);
                 }
 
                 await _UsersRepository.UpdateAsync(user);
@@ -103,7 +103,7 @@ namespace API.KeepThis.Services
             {
                 IdUser = user.IdUser,
                 Token = token,
-                TimestampToken = DateTime.UtcNow
+                TimestampToken = DateTime.Now
             };
 
             await _tokenRepository.AddTokenAsync(userToken);         

@@ -27,9 +27,6 @@ namespace API.KeepThis.Controllers
             try
             {
                 var user = await _AuthentificationService.AuthenticateUserAsync(request);
-                //var token = _AuthentificationService.GenerateJwtToken(user);
-
-                //return Ok(new { Token = token });
 
                 return Ok(user);
             }
