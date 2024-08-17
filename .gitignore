@@ -19,6 +19,9 @@ packages/
 # Uncomment if you have any NuGet cache files to ignore
 # nuget.exe
 
+#Appsettings
+API.KeepThis/API.KeepThis/appsettings.Development.json
+
 # Environment Variables
 .env
 .env.local

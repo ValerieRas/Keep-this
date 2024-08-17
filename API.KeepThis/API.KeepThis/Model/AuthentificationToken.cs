@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace API.KeepThis.Model;
 
@@ -11,7 +12,6 @@ public partial class AuthentificationToken
 {
     [Key]
     [Column("token")]
-    [StringLength(100)]
     public string Token { get; set; } = null!;
 
     [Column("timestamp_token", TypeName = "timestamp without time zone")]
@@ -21,6 +21,7 @@ public partial class AuthentificationToken
     [StringLength(36)]
     public string? IdUser { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("IdUser")]
     [InverseProperty("AuthentificationTokens")]
     public virtual User? IdUserNavigation { get; set; }

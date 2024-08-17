@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace API.KeepThis.Model;
 
@@ -46,21 +47,27 @@ public partial class User
     [Column("locked_out_end", TypeName = "timestamp without time zone")]
     public DateTime? LockedOutEnd { get; set; }
 
+    [JsonIgnore]
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<AuthentificationToken> AuthentificationTokens { get; set; } = new List<AuthentificationToken>();
 
+    [JsonIgnore]
     [InverseProperty("IdAcceptorNavigation")]
     public virtual ICollection<Friendship> FriendshipIdAcceptorNavigations { get; set; } = new List<Friendship>();
 
+    [JsonIgnore]
     [InverseProperty("IdRequestorNavigation")]
     public virtual ICollection<Friendship> FriendshipIdRequestorNavigations { get; set; } = new List<Friendship>();
 
+    [JsonIgnore]
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<NoteSharing> NoteSharings { get; set; } = new List<NoteSharing>();
 
+    [JsonIgnore]
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<Notebook> Notebooks { get; set; } = new List<Notebook>();
 
+    [JsonIgnore]
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<Note> Notes { get; set; } = new List<Note>();
 }

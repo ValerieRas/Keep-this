@@ -12,10 +12,12 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
+
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddJsonFile("appsettings.docker.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
+
 
 
 //Connection string to dataBase
@@ -26,31 +28,8 @@ builder.Services.AddDbContext<KeepThisDbContext>(
     );
 
 
-// Load JwtSettings from configuration
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
-// Register the interface with the configured implementation
-builder.Services.AddScoped<IJwtSettings>(serviceProvider =>
-{
-    var options = serviceProvider.GetRequiredService<IOptions<JwtSettings>>().Value;
-    return options;
-});
-
-// Register AuthentificationService
-builder.Services.AddScoped<IAuthentificationService>(serviceProvider =>
-{
-
-    var jwtSettings = serviceProvider.GetRequiredService<IJwtSettings>();
-    var passwordHasher = serviceProvider.GetRequiredService<IPasswordHasher>();
-    var usersRepository = serviceProvider.GetRequiredService<IUsersRepository>();
-    var authTokenRepository = serviceProvider.GetRequiredService<IAuthTokenRepository>();
-
-    // Create AuthentificationService
-    return new AuthentificationService(jwtSettings, passwordHasher, usersRepository, authTokenRepository);
-});
-
-
-string secretKey = builder.Configuration["Jwt:SecretKey"];
+string secretKey = configuration["JwtSettings:SecretKey"];
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(x =>
@@ -78,9 +57,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IPasswordSecurity, PasswordSecurity>();
 builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
 builder.Services.AddScoped<IAuthTokenRepository, AuthTokenRepository>();
+builder.Services.AddScoped<IBrevoService, BrevoService>();
 
 
 

@@ -6,6 +6,6 @@ namespace API.KeepThis.Repositories
     {
         Task AddTokenAsync(AuthentificationToken token);
         Task<AuthentificationToken> GetTokenByUserIdAsync(string userId);
-        Task RemoveTokenAsync(string userId);
+        Task RemoveTokenAsync(AuthentificationToken token);
     }
 }

@@ -1,10 +1,13 @@
 ﻿using API.KeepThis.Data;
 using API.KeepThis.Model;
 using Microsoft.EntityFrameworkCore;
+using API.KeepThis.Model;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace API.KeepThis.Repositories
 {
-    public class UsersRepository:IUsersRepository
+    public class UsersRepository : IUsersRepository
     {
         private readonly KeepThisDbContext _context;
 
@@ -31,6 +34,12 @@ namespace API.KeepThis.Repositories
         {
             _context.Users.Update(user);
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
     }
