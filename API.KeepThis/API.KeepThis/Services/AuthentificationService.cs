@@ -2,7 +2,6 @@
 using API.KeepThis.Model;
 using API.KeepThis.Model.DTO;
 using API.KeepThis.Repositories;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -75,7 +74,7 @@ namespace API.KeepThis.Services
                 throw new UnauthorizedAccessException("Nombre d'erreur de connexion dépassé. Veuillez réessayer plus tard.");
             }
 
-            if (!_passwordSecurity.VerifyPassword(user.PasswordUser, request.Password,user.SaltUser))
+            if (!_passwordSecurity.VerifyPassword(user.PasswordUser, request.Password, user.SaltUser))
             {
                 // Increment failed login attempts
                 user.FailedLoginAttemps++;
@@ -86,7 +85,7 @@ namespace API.KeepThis.Services
                     user.LockedOutEnd = DateTime.Now.AddMinutes(5);
                 }
 
-                await _UsersRepository.UpdateAsync(user);
+                await _UsersRepository.UpdateUserAsync(user);
 
                 throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
@@ -94,7 +93,7 @@ namespace API.KeepThis.Services
             // Reset failed login attempts on successful login
             user.FailedLoginAttemps = 0;
             user.LockedOutEnd = null;
-            await _UsersRepository.UpdateAsync(user);
+            await _UsersRepository.UpdateUserAsync(user);
 
             var token = GenerateJwtToken(user);
 
@@ -106,9 +105,9 @@ namespace API.KeepThis.Services
                 TimestampToken = DateTime.Now
             };
 
-            await _tokenRepository.AddTokenAsync(userToken);         
+            await _tokenRepository.AddTokenAsync(userToken);
 
-            return new LoginUserDto { User = user, Token=token };
+            return new LoginUserDto { User = user, Token = token };
         }
     }
 }
