@@ -2,8 +2,6 @@
 using API.KeepThis.Model;
 using API.KeepThis.Model.DTO;
 using API.KeepThis.Repositories;
-using System;
-using System.Threading.Tasks;
 
 namespace API.KeepThis.Services
 {
@@ -20,6 +18,13 @@ namespace API.KeepThis.Services
 
         public async Task<User> CreateUserAsync(UserCreationDTO userCreationDTO)
         {
+            // Check if the email is already used
+            var existingUser = await _usersRepository.GetByEmailAsync(userCreationDTO.UserEmail);
+            if (existingUser != null)
+            {
+                throw new InvalidOperationException("L'adresse e-mail est déjà utilisée.");
+            }
+
             // Map the DTO to the User entity
             var newUser = MapToUser(userCreationDTO);
 
@@ -28,6 +33,28 @@ namespace API.KeepThis.Services
 
             return newUser;
         }
+
+        public async Task UpdateUsernameAsync(UpdateUsernameDTO updateUsernameDTO)
+        {
+            // Find the user by their ID
+            var existingUser = await _usersRepository.GetByIdAsync(updateUsernameDTO.UserId);
+
+            // If the user is not found, throw an exception
+            if (existingUser == null)
+            {
+                throw new KeyNotFoundException("Utilisateur non trouvé.");
+            }
+
+            // Update the user's username
+            existingUser.NomUser = updateUsernameDTO.NewUsername;
+
+            // Send the updated user to the repository to save changes
+            await _usersRepository.UpdateUsernameAsync(existingUser);
+        }
+
+
+
+
 
         private User MapToUser(UserCreationDTO dto)
         {
@@ -38,15 +65,13 @@ namespace API.KeepThis.Services
             return new User
             {
                 IdUser = Guid.NewGuid().ToString(), // Generate a new GUID for IdUser
-                TempEmailUser = dto.TempEmailUser,
-                NomUser = dto.NomUser,
+                TempEmailUser = dto.UserEmail,
+                NomUser = dto.Username,
                 CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified), // Convert to Unspecified
                 IsActive = true,
                 SaltUser = salt, // Assign the generated salt
-                PasswordUser = _passwordSecurity.HashPassword(dto.PasswordUser, salt) // Hash the password using the salt
+                PasswordUser = _passwordSecurity.HashPassword(dto.UserPassword, salt) // Hash the password using the salt
             };
         }
-
-
     }
 }
