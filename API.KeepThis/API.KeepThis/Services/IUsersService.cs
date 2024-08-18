@@ -7,5 +7,7 @@ namespace API.KeepThis.Services
     {
         Task<User> CreateUserAsync(UserCreationDTO userCreationDTO);
         Task UpdateUsernameAsync(UpdateUsernameDTO updateUsernameDTO);
+        Task UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDTO);
+        Task UpdateEmailAsync(UpdateEmailDTO updateEmailDTO);
     }
 }
