@@ -10,15 +10,17 @@ namespace API.KeepThis.Model.DTO
         public string UserEmail { get; set; } = null!;
 
         [Required(ErrorMessage = "Veuillez confirmer votre adresse e-mail.")]
-        [Compare("TempEmailUser", ErrorMessage = "Les adresses e-mail ne correspondent pas.")]
+        [EmailAddress]
+        [Compare("UserEmail", ErrorMessage = "Les adresses e-mail ne correspondent pas.")]
         public string ConfirmUserEmail { get; set; } = null!;
 
         [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit comporter entre 8 et 100 caractères.")]
+        [StringLength(100, MinimumLength = 8)]
         public string UserPassword { get; set; } = null!;
 
         [Required(ErrorMessage = "La confirmation du mot de passe est obligatoire.")]
-        [Compare("PasswordUser", ErrorMessage = "Les mots de passe ne correspondent pas.")]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit comporter entre 8 et 100 caractères.")]
+        [Compare("UserPassword", ErrorMessage = "Les mots de passe ne correspondent pas.")]
         public string ConfirmPassword { get; set; } = null!;
 
         [Required(ErrorMessage = "Le nom d'utilisateur est obligatoire.")]
