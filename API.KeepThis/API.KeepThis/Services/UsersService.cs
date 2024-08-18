@@ -47,29 +47,6 @@ namespace API.KeepThis.Services
             await _usersRepository.UpdateUserAsync(existingUser);
         }
 
-        public async Task UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDTO)
-        {
-            // Retrieve the user by their ID
-            var user = await _usersRepository.GetByIdAsync(updatePasswordDTO.UserId) ?? throw new KeyNotFoundException("Utilisateur non trouvé.");
-
-            // Verify the current password
-            bool isCurrentPasswordValid = _passwordSecurity.VerifyPassword(user.PasswordUser, updatePasswordDTO.CurrentPassword, user.SaltUser);
-
-            if (!isCurrentPasswordValid)
-            {
-                throw new UnauthorizedAccessException("Le mot de passe actuel est incorrect.");
-            }
-
-            // Hash the new password
-            string newHashedPassword = _passwordSecurity.HashPassword(updatePasswordDTO.NewPassword, user.SaltUser);
-
-            // Update the user's password
-            user.PasswordUser = newHashedPassword;
-
-            // Save the changes to the database
-            await _usersRepository.UpdateUserAsync(user);
-        }
-
         public async Task UpdateEmailAsync(UpdateEmailDTO updateEmailDTO)
         {
             // Retrieve the user by their ID
@@ -94,6 +71,30 @@ namespace API.KeepThis.Services
             // Save the changes to the database
             await _usersRepository.UpdateUserAsync(user);
         }
+
+        public async Task UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDTO)
+        {
+            // Retrieve the user by their ID
+            var user = await _usersRepository.GetByIdAsync(updatePasswordDTO.UserId) ?? throw new KeyNotFoundException("Utilisateur non trouvé.");
+
+            // Verify the current password
+            bool isCurrentPasswordValid = _passwordSecurity.VerifyPassword(user.PasswordUser, updatePasswordDTO.CurrentPassword, user.SaltUser);
+
+            if (!isCurrentPasswordValid)
+            {
+                throw new UnauthorizedAccessException("Le mot de passe actuel est incorrect.");
+            }
+
+            // Hash the new password
+            string newHashedPassword = _passwordSecurity.HashPassword(updatePasswordDTO.NewPassword, user.SaltUser);
+
+            // Update the user's password
+            user.PasswordUser = newHashedPassword;
+
+            // Save the changes to the database
+            await _usersRepository.UpdateUserAsync(user);
+        }
+        
 
 
 
