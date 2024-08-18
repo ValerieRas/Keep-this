@@ -86,7 +86,7 @@ namespace API.KeepThis.Services
                     user.LockedOutEnd = DateTime.Now.AddMinutes(5);
                 }
 
-                await _UsersRepository.UpdateAsync(user);
+                await _UsersRepository.UpdateUserAsync(user);
 
                 throw new UnauthorizedAccessException("email ou mot de passe incorrect");
             }
@@ -94,7 +94,7 @@ namespace API.KeepThis.Services
             // Reset failed login attempts on successful login
             user.FailedLoginAttemps = 0;
             user.LockedOutEnd = null;
-            await _UsersRepository.UpdateAsync(user);
+            await _UsersRepository.UpdateUserAsync(user);
 
             var token = GenerateJwtToken(user);
 
