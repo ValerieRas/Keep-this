@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.KeepThis.Repositories
 {
-    public class AuthTokenRepository: IAuthTokenRepository
+    public class AuthTokenRepository : IAuthTokenRepository
     {
         private readonly KeepThisDbContext _context;
 
@@ -20,7 +20,7 @@ namespace API.KeepThis.Repositories
                 _context.AuthentificationTokens.Add(token);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -28,7 +28,7 @@ namespace API.KeepThis.Repositories
 
         public async Task<AuthentificationToken> GetTokenByUserIdAsync(string userId)
         {
-            return await _context.AuthentificationTokens.SingleOrDefaultAsync(t => t.IdUser== userId);
+            return await _context.AuthentificationTokens.SingleOrDefaultAsync(t => t.IdUser == userId);
         }
 
         public async Task RemoveTokenAsync(string userId)

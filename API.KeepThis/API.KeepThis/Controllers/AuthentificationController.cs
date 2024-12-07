@@ -1,7 +1,5 @@
 ﻿using API.KeepThis.Model.DTO;
 using API.KeepThis.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.KeepThis.Controllers

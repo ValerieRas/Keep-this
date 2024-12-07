@@ -1,6 +1,4 @@
-﻿using BCrypt.Net;
-
-namespace API.KeepThis.Helpers
+﻿namespace API.KeepThis.Helpers
 {
     public class PasswordSecurity : IPasswordSecurity
     {

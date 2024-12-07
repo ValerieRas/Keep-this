@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using API.KeepThis.Model;
+﻿using API.KeepThis.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.KeepThis.Data;
