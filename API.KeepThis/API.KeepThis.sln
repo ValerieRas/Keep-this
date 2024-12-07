@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.KeepThis", "API.KeepThis\API.KeepThis.csproj", "{BD638C23-F3E6-40FC-819D-92E479D27BE7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.KeepThis.Tests", "API.KeepThis.Tests\API.KeepThis.Tests.csproj", "{5A452AA5-E7F3-4069-A85F-790D44C2FFD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BD638C23-F3E6-40FC-819D-92E479D27BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD638C23-F3E6-40FC-819D-92E479D27BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD638C23-F3E6-40FC-819D-92E479D27BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A452AA5-E7F3-4069-A85F-790D44C2FFD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A452AA5-E7F3-4069-A85F-790D44C2FFD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A452AA5-E7F3-4069-A85F-790D44C2FFD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A452AA5-E7F3-4069-A85F-790D44C2FFD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
